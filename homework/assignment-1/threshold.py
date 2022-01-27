@@ -38,3 +38,6 @@ img[img > 0] = 255
 cv2.imshow("Display window", img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+if output_path is not None:
+    cv2.imwrite(output_path, img)
