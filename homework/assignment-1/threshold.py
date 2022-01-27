@@ -21,10 +21,20 @@ args = parser.parse_args()
 
 ### Save arguments
 image_path = args.image
-threshold = args.threshold
+threshold = np.uint8(args.threshold)
 output_path = args.output
 
-print(image_path, threshold, output_path)
+### Read in image
+img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
+if img is None:
+    sys.exit(print("Could not read image from supplied path:", image_path))
 
+### Perform image thresholding
+img[img <= threshold] = 0
+img[img > 0] = 255
 
+### Display image
+cv2.imshow("Display window", img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
