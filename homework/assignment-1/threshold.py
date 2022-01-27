@@ -3,7 +3,6 @@ import argparse
 import cv2
 import numpy as np
 import sys
-import os
 
 ### Initialize argument parser
 parser = argparse.ArgumentParser(description="Perform Grayscale Image Thresholding")
@@ -31,8 +30,8 @@ if img is None:
     sys.exit(print("Could not read image from supplied path:", image_path))
 
 ### Perform image thresholding
-img[img <= threshold] = 0
-img[img > 0] = 255
+img[img < threshold] = 0
+img[img >= 0] = 255
 
 ### Display image
 cv2.imshow("Display window", img)
