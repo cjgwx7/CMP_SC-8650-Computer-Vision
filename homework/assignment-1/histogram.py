@@ -5,7 +5,7 @@ import numpy as np
 import sys
 
 ### Initialize argument parser
-parser = argparse.ArgumentParser(description="Perform Grayscale Image Thresholding based off Histogram Appraisal")
+parser = argparse.ArgumentParser(description="Perform Grayscale Image Thresholding based off Visual Histogram Appraisal")
 
 ### Create required argument group
 requiredNamed = parser.add_argument_group("Required named arguments")
@@ -40,8 +40,36 @@ plt.imshow(img, cmap="gray")
 # Histogram
 plt.figure()
 plt.title("Grayscale Histogram")
-plt.xlabel("Bins")
-plt.ylabel("# of Pixels")
+plt.xlabel("Pixel Value")
+plt.ylabel("Frequency of Observed Pixels")
 plt.plot(hist)
 plt.xlim([0, 256])
+
 plt.show()
+
+### Image Thresholding
+
+threshold = input("Input image binarization threshold: ")
+threshold = np.uint8(threshold)
+
+original_image = img.copy()
+img[img < threshold] = 0
+img[img > 0] = 255
+
+### Display Results
+
+plt.figure()
+plt.title("Binarized Grayscale Image")
+plt.axis("off")
+plt.imshow(img, cmap="gray")
+
+plt.figure()
+plt.title("Original Grayscale Image")
+plt.axis("off")
+plt.imshow(original_image, cmap="gray")
+
+plt.show()
+
+### Optionally save results
+if output_path is not None:
+    cv2.imwrite(output_path, img)
