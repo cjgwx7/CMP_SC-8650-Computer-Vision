@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 
 np.random.seed(2422)
 
-X = np.array([[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12]])
-
 def euclidean_distance(x, y):
     sum = np.sum((x - y)**2)
     square_root = np.sqrt(sum)
