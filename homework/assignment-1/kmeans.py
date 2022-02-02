@@ -2,23 +2,77 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-### Read in image as grayscale or color based on flag
-image = cv2.imread("C:/Users/cgroh/OneDrive/Desktop/PhD/courses-program/SP22/CMP_SC-8650-Computer-Vision/homework/assignment-1/images/building.jpg", 0)
-dim = (224, 224)
-image = cv2.resize(image, dim)
-row = image.shape[0]
-col = image.shape[1]
-channel = 1
-image = image.reshape(row*col, channel)
-print(image)
+np.random.seed(2422)
 
-### KMeans algorithm
-def pairwise_distance(x, y):
-    SS_x = np.sum(np.square(x), axis = 1)
-    SS_y = np.sum(np.square(y), axis = 1)
-    product = np.dot(SS_x, SS_y.T)
-    distances = np.uint8(np.sqrt(abs(SS_x[:, np.newaxis] + SS_y-2*product)))
-    return distances
+X = np.array([[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12]])
 
-dist = pairwise_distance(x = image, y = image)
-print(np.max(dist))
+def euclidean_distance(x, y):
+    sum = np.sum((x - y)**2)
+    square_root = np.sqrt(sum)
+    return square_root
+
+class KMeansClustering():
+
+    def __init__(self, K = 3, max_iterations = 100):
+        self.K = K
+        self.max_iterations = max_iterations
+        self.clusters = [[] for _ in range(self.K)]
+        self.centroids = []
+
+    def predict(self, X):
+        self.X = X
+        self.samples_n, self.features_n = X.shape
+
+        random_sample_idxs = np.random.choice(self.samples_n, self.K, replace = False)
+        self.centroids = [self.X[idx] for idx in random_sample_idxs]
+        
+        for _ in range(self.max_iterations):
+            self.clusters = self.create_clusters(self.centroids)
+            centroids_old = self.centroids
+            self.centroids = self.get_centroids(self.clusters)
+            if self.is_converged(centroids_old, self.centroids):
+                break
+        
+        return self.get_cluster_labels(self.clusters)
+
+    def get_cluster_labels(self, clusters):
+        labels = np.empty(self.samples_n)
+
+        for cluster_idx, cluster in enumerate(clusters):
+            for sample_index in cluster:
+                labels[sample_index] = cluster_idx
+        
+        return labels
+
+    def create_clusters(self, centroids):
+        clusters = [[] for _ in range(self.K)]
+        
+        for idx, sample in enumerate(self.X):
+            centroid_idx = self.closest_centroid(sample, centroids)
+            clusters[centroid_idx].append(idx)
+        
+        return clusters
+    
+    def closest_centroid(self, sample, centroids):
+        distances = [euclidean_distance(sample, point) for point in centroids]
+        closest_index = np.argmin(distances)
+        return closest_index
+
+    def get_centroids(self, clusters):
+        centroids = np.zeros((self.K, self.features_n))
+        
+        for cluster_idx, cluster in enumerate(clusters):
+            cluster_mean = np.mean(self.X[cluster], axis = 0)
+            centroids[cluster_idx] = cluster_mean
+        
+        return centroids
+
+    def is_converged(self, centroids_old, centroids):
+        distances = [euclidean_distance(centroids_old[i], centroids[i]) for i in range(self.K)]
+        return sum(distances) == 0
+    
+    def cent(self):
+        return self.centroids
+
+test = KMeansClustering()
+print(test.predict(X))
