@@ -72,5 +72,4 @@ class KMeansClustering():
     def cent(self):
         return self.centroids
 
-test = KMeansClustering()
-print(test.predict(X))
+
