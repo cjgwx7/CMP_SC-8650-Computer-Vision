@@ -31,7 +31,7 @@ if img is None:
 
 ### Perform image thresholding
 img[img < threshold] = 0
-img[img >= 0] = 255
+img[img > 0] = 255
 
 ### Display image
 cv2.imshow("Display window", img)
